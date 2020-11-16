@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Newtonsoft.Json.Serialization;
+
+using System.Web.Http.Cors;
 
 namespace searchdatetimes
 {
     public static class WebApiConfig
     {
+
+
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
-
+            EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
             // Web API routes
             config.MapHttpAttributeRoutes();
 
@@ -19,6 +25,11 @@ namespace searchdatetimes
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            // configure json formatter
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
+            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
+
         }
     }
 }
